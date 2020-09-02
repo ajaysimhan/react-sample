@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
-import TodoMain from './todo/TodoMain'
+import SudokuMain from './sudoku/SudokuMain'
 
 class App extends Component {
 
   render() {
+    
     return (
       <div>
-        <TodoMain />
+        <h1>Sudoku</h1>
+        <h3>Happy Onam</h3>
+        <SudokuMain />
       </div>
     )
   }
