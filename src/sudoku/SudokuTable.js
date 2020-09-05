@@ -4,59 +4,99 @@ import SudokuTableUI from './SudokuTableUI'
 class SudokuTable extends Component {
     state = {
         counter: 1,
-        cellIndexcellValueList: [],
         aliceState: {
-            _00: 5,
-            _01: 9,
-            _02: 7,
-            _10: 6,
-            _11: 4,
-            _12: 1,
-            _20: 2,
-            _21: 3,
-            _22: 8,
+            _00: '',
+            _01: '',
+            _02: '',
+            _10: '',
+            _11: '',
+            _12: '',
+            _20: '',
+            _21: '',
+            _22: '',
         },
         bobState: {
-            _00: 0,
-            _01: 0,
-            _02: 0,
-            _10: 0,
-            _11: 0,
-            _12: 0,
-            _20: 0,
-            _21: 0,
-            _22: 0,
+            _00: '',
+            _01: '',
+            _02: '',
+            _10: '',
+            _11: '',
+            _12: '',
+            _20: '',
+            _21: '',
+            _22: '',
+        },
+        markState: {
+            _00: '',
+            _01: '',
+            _02: '',
+            _10: '',
+            _11: '',
+            _12: '',
+            _20: '',
+            _21: '',
+            
+            _22: '',
         }
     }
 
-    handleClick = (event, userName) => {
-        const counter = this.state.counter
-        if(counter >= 10) {
-            return
-        } else {
-            event.target.value = counter
-        }
+    componentDidMount() {
+        //this.timer = setInterval(()=> this.getItems(), 1000);
+    }
 
-        if(userName === 'bob') {
-            const p = this.state.aliceState
-            for (var key in p) {
-                console.log(key + " -> " + p[key]);
-                if(p[key] === counter) {
-                    this.setState({
-                        aliceState: {
-                            ...this.state.aliceState,
-                            [key]: 0
-                        }
-                    })
-                }
-                
-            }
-        }
-
-        this.setState(prevState => {
-            return ({
-                counter: prevState.counter + 1
+    getItems() {
+        fetch('http://localhost:8080/get')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            this.setState({
+                aliceState: data.aliceState,
+                bobState: data.bobState,
+                markState: data.bobState
             })
+        })
+    }
+
+    handleClick = (event, userName, index) => {
+        const currCounter = this.state.counter
+        if(currCounter >= 10) {
+            return
+        }
+
+        if(userName === 'alice') {
+            this.setState(prevState => {
+                return ({
+                    counter: prevState.counter + 1,
+                    aliceState: {
+                        ...prevState.aliceState,
+                        [index]: currCounter
+                    }
+                })
+            })
+        }
+        if(userName === 'bob') {
+            this.setState(prevState => {
+                return ({
+                    counter: prevState.counter + 1,
+                    bobState: {
+                        ...prevState.bobState,
+                        [index]: currCounter
+                    }
+                })
+            })
+        }
+        const body = {
+            userName: userName,
+            index: index,
+            value: currCounter
+        }
+        fetch('http://localhost:8080/update', {
+            method: 'POST',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body)
         })
     }
     
@@ -69,6 +109,9 @@ class SudokuTable extends Component {
                 <hr />
                 <h1>Bob</h1>
                 <SudokuTableUI handleClick={this.handleClick} userName="bob" myState={this.state.bobState}  />
+                <hr />
+                <h1>Mark</h1>
+                <SudokuTableUI handleClick={this.handleClick} userName="mark" myState={this.state.markState}  />
             </div>
         )
     } 

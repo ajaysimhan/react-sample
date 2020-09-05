@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SudokuMain from './sudoku/SudokuMain'
+import SnakeOrigin from './snake/SnakeOrigin';
 
 class App extends Component {
 
@@ -9,7 +9,7 @@ class App extends Component {
       <div>
         <h1>Sudoku</h1>
         <h3>Happy Onam</h3>
-        <SudokuMain />
+        <SnakeOrigin />
       </div>
     )
   }
